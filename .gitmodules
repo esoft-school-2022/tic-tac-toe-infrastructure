@@ -1,6 +1,6 @@
-[submodule "api"]
-	path = api
-	url = git@github.com:esoft-school-2022/tic-tac-toe-backend.git
-[submodule "client"]
-	path = client
+[submodule "services/client"]
+	path = services/client
 	url = git@github.com:esoft-school-2022/tic-tac-toe-frontend.git
+[submodule "services/api"]
+	path = services/api
+	url = git@github.com:esoft-school-2022/tic-tac-toe-backend.git
