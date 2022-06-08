@@ -11,7 +11,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./data/pgsql:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: tic_tac_toe
       POSTGRES_PASSWORD: Passw0rd
@@ -32,12 +32,13 @@ services:
       DB_MIN_POOL: 2
       DB_MAX_POOL: 8
       NODE_ENV: production
+      LOGGER_LEVEL: info
+      LOKI_HOST: http://loki:3100
+      ENABLE_CONSOLE: 1
     ports:
       - '12321:12321'
-    command: 'npm run start debug'
-    links:
-      - redis
-      - pgsql
+      - '9229:9229'
+    command: 'npm run debug'
     depends_on:
       - redis
       - pgsql
@@ -51,11 +52,52 @@ services:
       - '80:80'
       - '443:443'
     command: 'nginx -g "daemon off;"'
-    links:
-      - api
-      - redis
-      - pgsql
     depends_on:
-      - pgsql
-      - redis
       - api
+  loki:
+    container_name: loki
+    image: grafana/loki
+    command: [ '-config.file=/etc/loki/config.yaml' ]
+    ports:
+      - '3100:3100'
+    environment:
+      - JAEGER_AGENT_HOST=tempo
+      - JAEGER_ENDPOINT=http://tempo:14268/api/traces
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
+    volumes:
+      - ./services/grafana/loki.yaml:/etc/loki/config.yaml
+      - ./data/loki:/var/loki
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    command: [ '--config.file=/etc/prometheus/config.yaml' ]
+    volumes:
+      - ./services/grafana/prometheus.yaml:/etc/prometheus/config.yaml
+    ports:
+      - '9090:9090'
+  tempo:
+    container_name: tempo
+    image: grafana/tempo
+    command: [ '-config.file=/etc/tempo/config.yaml' ]
+    volumes:
+      - ./services/grafana/tempo.yaml:/etc/tempo/config.yaml
+      - ./data/tempo:/var/tempo
+    ports:
+      - '14268:14268'
+      - '3200:3200'
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    volumes:
+      - ./services/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - '3000:3000'
+    depends_on:
+      - loki
+      - tempo
+      - prometheus
