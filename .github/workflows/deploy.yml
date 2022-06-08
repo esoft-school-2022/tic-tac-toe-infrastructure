@@ -8,7 +8,7 @@ jobs:
       - run: eval $(ssh-agent -s)
       - run: mkdir -p ~/.ssh
       - run: chmod 700 ~/.ssh
-      - run: cp "${{ secrets.PRIVATE_KEY }}" ~/.ssh/id_rsa
+      - run: echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
       - run: chmod 600 ~/.ssh/id_rsa
       - run: ssh-add ~/.ssh/id_rsa
       - run: echo -e "Host *\n\tControlMaster auto\n\tControlPersist 10m\n\tControlPath ~/.ssh/%r@%h:%p" > ~/.ssh/config
