@@ -1,0 +1,21 @@
+name: Deploy
+on: [push]
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
+      - run: eval $(ssh-agent -s)
+      - run: mkdir -p ~/.ssh
+      - run: chmod 700 ~/.ssh
+      - run: cp "$PRIVATE_KEY" ~/.ssh/id_rsa
+      - run: chmod 600 ~/.ssh/id_rsa
+      - run: ssh-add ~/.ssh/id_rsa
+      - run: echo -e "Host *\n\tControlMaster auto\n\tControlPersist 10m\n\tControlPath ~/.ssh/%r@%h:%p" > ~/.ssh/config
+      - run: ssh -T -i ~/.ssh/id_rsa "$USER@$HOST" << EOL
+        sudo su
+        cd /var/www/tic-tac-toe
+        git pull
+        docker-compose build
+        docker-compose up -d
+      EOL
