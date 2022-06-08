@@ -60,11 +60,6 @@ services:
     command: [ '-config.file=/etc/loki/config.yaml' ]
     ports:
       - '3100:3100'
-    environment:
-      - JAEGER_AGENT_HOST=tempo
-      - JAEGER_ENDPOINT=http://tempo:14268/api/traces
-      - JAEGER_SAMPLER_TYPE=const
-      - JAEGER_SAMPLER_PARAM=1
     volumes:
       - ./services/grafana/loki.yaml:/etc/loki/config.yaml
       - ./data/loki:/var/loki
@@ -76,16 +71,6 @@ services:
       - ./services/grafana/prometheus.yaml:/etc/prometheus/config.yaml
     ports:
       - '9090:9090'
-  tempo:
-    container_name: tempo
-    image: grafana/tempo
-    command: [ '-config.file=/etc/tempo/config.yaml' ]
-    volumes:
-      - ./services/grafana/tempo.yaml:/etc/tempo/config.yaml
-      - ./data/tempo:/var/tempo
-    ports:
-      - '14268:14268'
-      - '3200:3200'
   grafana:
     container_name: grafana
     image: grafana/grafana
