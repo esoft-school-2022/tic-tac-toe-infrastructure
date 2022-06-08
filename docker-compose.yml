@@ -35,6 +35,7 @@ services:
       LOGGER_LEVEL: info
       LOKI_HOST: http://loki:3100
       ENABLE_CONSOLE: 1
+      METRICS_PREFIX: tic_tac_toe_
     ports:
       - '12321:12321'
       - '9229:9229'
