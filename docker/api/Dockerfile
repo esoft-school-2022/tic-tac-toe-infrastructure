@@ -1,4 +1,4 @@
-FROM node:carbon
+FROM node
 WORKDIR /usr/src/app
 COPY ./package.json ./package.json
 RUN npm i

@@ -1,37 +1,60 @@
 version: '3'
 services:
   redis:
+    container_name: redis
     image: redis
     ports:
       - '6379:6379'
   pgsql:
+    container_name: pgsql
     image: postgres
     ports:
       - '5432:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: tic_tac_toe
       POSTGRES_PASSWORD: Passw0rd
       POSTGRES_DB: tic_tac_toe
   api:
+    container_name: api
     build:
       context: ./services/api
       dockerfile: ../../docker/api/Dockerfile
     volumes:
-      - ./services/api:/usr/src/app
+      - ./services/api/configs:/usr/src/app/configs
+      - ./services/api/src:/usr/src/app/src
+      - ./services/api/index.js:/usr/src/app/index.js
+    environment:
+      AUTH_SECRET: super-secret
+      REDIS_URL: redis://redis:6379
+      DB_URL: postgresql://tic_tac_toe:Passw0rd@pgsql:5432/tic_tac_toe
+      DB_MIN_POOL: 2
+      DB_MAX_POOL: 8
+      NODE_ENV: production
     ports:
       - '12321:12321'
-    entrypoint:
-      - npm run db migrate:latest
-      - npm run start
+    command: 'npm run start debug'
+    links:
+      - redis
+      - pgsql
     depends_on:
       - redis
-      - postgres
+      - pgsql
   proxy:
     build:
-      context: ./services/client
-      dockerfile: ../../docker/proxy/Dockerfile
-    entrypoint:
-      - nginx restart
+      context: ./services
+      dockerfile: ../docker/proxy/Dockerfile
+    volumes:
+      - ./services/nginx:/etc/nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    command: 'nginx -g "daemon off;"'
+    links:
+      - api
+      - redis
+      - pgsql
     depends_on:
       - pgsql
       - redis

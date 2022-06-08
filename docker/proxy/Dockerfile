@@ -1,8 +1,8 @@
-FROM node:carbon as builder
+FROM node as builder
 WORKDIR /usr/src/app
-COPY client/package.json ./package.json
+COPY ./client/package.json ./package.json
 RUN npm i
-COPY frontend .
+COPY ./client .
 RUN npm run build
 
 FROM nginx:alpine
