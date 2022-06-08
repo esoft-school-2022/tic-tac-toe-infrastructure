@@ -4,16 +4,16 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
-      - run: eval $(ssh-agent -s)
-      - run: ssh-agent /bin/sh
-      - run: mkdir -p ~/.ssh
-      - run: chmod 700 ~/.ssh
-      - run: echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
-      - run: chmod 600 ~/.ssh/id_rsa
-      - run: ssh-add ~/.ssh/id_rsa
-      - run: echo -e "Host *\n\tControlMaster auto\n\tControlPersist 10m\n\tControlPath ~/.ssh/%r@%h:%p" > ~/.ssh/config
-      - run: ssh -T -i ~/.ssh/id_rsa "${{ secrets.USER }}@${{ secrets.HOST }}" << EOL
+      - run: |
+          which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
+          eval $(ssh-agent -s)
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-add ~/.ssh/id_rsa
+          echo -e "Host *\n\tControlMaster auto\n\tControlPersist 10m\n\tControlPath ~/.ssh/%r@%h:%p" > ~/.ssh/config
+          ssh -T -i ~/.ssh/id_rsa "${{ secrets.USER }}@${{ secrets.HOST }}" << EOL
             sudo su
             cd /var/www/tic-tac-toe
             git pull
