@@ -13,9 +13,9 @@ jobs:
       - run: ssh-add ~/.ssh/id_rsa
       - run: echo -e "Host *\n\tControlMaster auto\n\tControlPersist 10m\n\tControlPath ~/.ssh/%r@%h:%p" > ~/.ssh/config
       - run: ssh -T -i ~/.ssh/id_rsa "$USER@$HOST" << EOL
-        sudo su
-        cd /var/www/tic-tac-toe
-        git pull
-        docker-compose build
-        docker-compose up -d
-      EOL
+            sudo su
+            cd /var/www/tic-tac-toe
+            git pull
+            docker-compose build
+            docker-compose up -d
+          EOL
