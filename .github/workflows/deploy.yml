@@ -6,6 +6,7 @@ jobs:
     steps:
       - run: which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
       - run: eval $(ssh-agent -s)
+      - run: ssh-agent /bin/sh
       - run: mkdir -p ~/.ssh
       - run: chmod 700 ~/.ssh
       - run: echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
