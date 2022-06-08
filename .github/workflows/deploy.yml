@@ -14,6 +14,7 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           echo -e "Host *\n\tControlMaster auto\n\tControlPersist 10m\n\tControlPath ~/.ssh/%r@%h:%p" > ~/.ssh/config
           echo "${{ secrets.USER }}@${{ secrets.HOST }}"
+          ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           ssh -T -i ~/.ssh/id_rsa "${{ secrets.USER }}@${{ secrets.HOST }}" << EOL
             sudo su
             cd /var/www/tic-tac-toe
