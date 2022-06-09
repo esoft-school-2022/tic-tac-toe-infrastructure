@@ -6,7 +6,7 @@ jobs:
     steps:
       - run: |
           sudo apt-get update -y && sudo apt-get install docker -y
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           cd ./services/api
           docker build -f ../docker/api/Dockerfile -t alexanderfromearth/tic-tac-toe-api:latest
           docker push alexanderfromearth/tic-tac-toe-api:latest
