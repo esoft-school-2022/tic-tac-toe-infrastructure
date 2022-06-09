@@ -5,6 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          sudo su
           apt-get install docker -y
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           cd ./services/api
@@ -14,6 +15,7 @@ jobs:
           docker build -f ../docker/proxy/Dockerfile -t alexanderfromearth/tic-tac-toe-proxy:latest
           docker push alexanderfromearth/tic-tac-toe-proxy:latest
       - run: |
+          sudo su
           which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
           eval $(ssh-agent -s)
           mkdir -p ~/.ssh
