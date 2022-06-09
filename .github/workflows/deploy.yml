@@ -1,21 +1,28 @@
 name: Deploy
 on: [workflow_dispatch]
 jobs:
-  Deploy:
+  Build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      - run: |
+      - name: Docker login
+        run: |
           echo '${{ secrets.DOCKERHUB_PASSWORD }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin
-      - run: |
+      - name: Build backend
+        run: |
           docker build -f ./docker/api/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest ./services/api
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest
-      - run: |
+      - name: Build frontend
+        run: |
           docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest ./services
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest
-      - run: |
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy on Node
+        run: |
           eval $(ssh-agent -s)
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
