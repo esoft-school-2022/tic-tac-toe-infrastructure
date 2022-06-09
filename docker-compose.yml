@@ -18,9 +18,7 @@ services:
       POSTGRES_DB: tic_tac_toe
   api:
     container_name: api
-    build:
-      context: ./services/api
-      dockerfile: ../../docker/api/Dockerfile
+    image: alexanderfromearth/tic-tac-toe-api
     volumes:
       - ./services/api/configs:/usr/src/app/configs
       - ./services/api/src:/usr/src/app/src
@@ -44,9 +42,8 @@ services:
       - redis
       - pgsql
   proxy:
-    build:
-      context: ./services
-      dockerfile: ../docker/proxy/Dockerfile
+    container_name: proxy
+    image: alexanderfromearth/tic-tac-toe-proxy
     volumes:
       - ./services/nginx:/etc/nginx
     ports:

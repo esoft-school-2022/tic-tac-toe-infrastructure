@@ -5,6 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          apt-get install docker -y
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          cd ./services/api
+          docker build -f ../docker/api/Dockerfile -t alexanderfromearth/tic-tac-toe-api:latest
+          docker push alexanderfromearth/tic-tac-toe-api:latest
+          cd ../
+          docker build -f ../docker/proxy/Dockerfile -t alexanderfromearth/tic-tac-toe-proxy:latest
+          docker push alexanderfromearth/tic-tac-toe-proxy:latest
+      - run: |
           which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
           eval $(ssh-agent -s)
           mkdir -p ~/.ssh
@@ -22,6 +31,6 @@ jobs:
             git submodule sync
             git submodule update
             sudo su
-            docker-compose build
+            docker-compose pull
             docker-compose up -d
           EOL
