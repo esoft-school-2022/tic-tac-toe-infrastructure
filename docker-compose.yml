@@ -2,12 +2,12 @@ version: '3'
 services:
   redis:
     container_name: redis
-    image: redis
+    image: redis:latest
     ports:
       - '6379:6379'
   pgsql:
     container_name: pgsql
-    image: postgres
+    image: postgres:latest
     ports:
       - '5432:5432'
     volumes:
@@ -18,7 +18,7 @@ services:
       POSTGRES_DB: tic_tac_toe
   api:
     container_name: api
-    image: alexanderfromearth/tic-tac-toe-api
+    image: alexanderfromearth/tic-tac-toe-api:latest
     volumes:
       - ./services/api/configs:/usr/src/app/configs
       - ./services/api/src:/usr/src/app/src
@@ -43,7 +43,7 @@ services:
       - pgsql
   proxy:
     container_name: proxy
-    image: alexanderfromearth/tic-tac-toe-proxy
+    image: alexanderfromearth/tic-tac-toe-proxy:latest
     volumes:
       - ./services/nginx:/etc/nginx
     ports:
@@ -54,7 +54,7 @@ services:
       - api
   loki:
     container_name: loki
-    image: grafana/loki
+    image: grafana/loki:latest
     command: [ '-config.file=/etc/loki/config.yaml' ]
     ports:
       - '3100:3100'
@@ -63,7 +63,7 @@ services:
       - ./data/loki:/var/loki
   prometheus:
     container_name: prometheus
-    image: prom/prometheus
+    image: prom/prometheus:latest
     command: [ '--config.file=/etc/prometheus/config.yaml' ]
     volumes:
       - ./services/grafana/prometheus.yaml:/etc/prometheus/config.yaml
@@ -71,7 +71,7 @@ services:
       - '9090:9090'
   grafana:
     container_name: grafana
-    image: grafana/grafana
+    image: grafana/grafana:latest
     volumes:
       - ./services/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:

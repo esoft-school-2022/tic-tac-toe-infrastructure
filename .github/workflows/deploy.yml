@@ -1,5 +1,5 @@
 name: Deploy
-on: [push]
+on: [workflow_dispatch]
 jobs:
   Deploy:
     runs-on: ubuntu-latest
@@ -10,11 +10,11 @@ jobs:
       - run: |
           echo '${{ secrets.DOCKERHUB_PASSWORD }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin
       - run: |
-          docker build -f ./docker/api/Dockerfile -t alexanderfromearth/tic-tac-toe-api:latest ./services/api
-          docker push alexanderfromearth/tic-tac-toe-api:latest
+          docker build -f ./docker/api/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest ./services/api
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest
       - run: |
-          docker build -f ./docker/proxy/Dockerfile -t alexanderfromearth/tic-tac-toe-proxy:latest ./services
-          docker push alexanderfromearth/tic-tac-toe-proxy:latest
+          docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest ./services
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest
       - run: |
           eval $(ssh-agent -s)
           mkdir -p ~/.ssh
