@@ -6,9 +6,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
+          git submodules init
+          git submodules sync
+          git submodules update
           echo '${{ secrets.DOCKERHUB_PASSWORD }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin
-          cd ./services/api
-          docker build -f ../../docker/api/Dockerfile -t alexanderfromearth/tic-tac-toe-api:latest .
+          docker build -f ./docker/api/Dockerfile -t alexanderfromearth/tic-tac-toe-api:latest ./services/api
           docker push alexanderfromearth/tic-tac-toe-api:latest
           cd ../
           docker build -f ../docker/proxy/Dockerfile -t alexanderfromearth/tic-tac-toe-proxy:latest .
