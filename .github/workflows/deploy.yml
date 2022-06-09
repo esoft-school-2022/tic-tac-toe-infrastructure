@@ -14,7 +14,6 @@ jobs:
           docker build -f ../docker/proxy/Dockerfile -t alexanderfromearth/tic-tac-toe-proxy:latest
           docker push alexanderfromearth/tic-tac-toe-proxy:latest
       - run: |
-          sudo su
           which ssh-agent || (sudo apt-get update -y && sudo apt-get install openssh-client -y)
           eval $(ssh-agent -s)
           mkdir -p ~/.ssh
