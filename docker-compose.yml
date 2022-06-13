@@ -18,7 +18,7 @@ services:
       POSTGRES_DB: tic_tac_toe
   api:
     container_name: api
-    image: alexanderfromearth/tic-tac-toe/api:latest
+    image: alexanderfromearth/tic-tac-toe-api:latest
     volumes:
       - ./services/api/configs:/usr/src/app/configs
       - ./services/api/src:/usr/src/app/src
@@ -43,7 +43,7 @@ services:
       - pgsql
   proxy:
     container_name: proxy
-    image: alexanderfromearth/tic-tac-toe/proxy:latest
+    image: alexanderfromearth/tic-tac-toe-proxy:latest
     volumes:
       - ./services/nginx:/etc/nginx
       - /etc/letsencrypt:/etc/letsencrypt
