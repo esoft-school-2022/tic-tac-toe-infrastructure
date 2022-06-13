@@ -16,15 +16,12 @@ jobs:
           echo '${{ secrets.DOCKERHUB_PASSWORD }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin
       - name: Build backend
         run: |
-          docker build -f ./docker/api/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe/api:latest ./services/api
+          docker build -f ./docker/api/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest ./services/api
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest
       - name: Build frontend
         run: |
-          docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe/proxy:latest ./services
+          docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest ./services
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest
-  Deploy:
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy on Node
         run: |
           eval $(ssh-agent -s)
