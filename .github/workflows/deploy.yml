@@ -20,7 +20,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest
       - name: Build frontend
         run: |
-          docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-frontend:latest ./services
+          docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-frontend:latest ./services/client
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-frontend:latest
       - name: Build proxy
         run: |

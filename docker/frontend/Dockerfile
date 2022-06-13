@@ -1,6 +1,6 @@
 FROM node
 WORKDIR /usr/src/app
-COPY ./client/package.json ./package.json
+COPY ./package.json ./package.json
 RUN npm i
-COPY ./client .
+COPY . .
 RUN npm run build
