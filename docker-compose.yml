@@ -37,7 +37,7 @@ services:
     ports:
       - '12321:12321'
       - '9229:9229'
-    command: 'bash -c "npm db migrate:latest && npm run debug"'
+    command: 'bash -c "npm run db migrate:latest && npm run debug"'
     depends_on:
       - redis
       - pgsql
