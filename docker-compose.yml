@@ -63,7 +63,7 @@ services:
       ENABLE_CONSOLE: 1
       METRICS_PREFIX: skillfox_
     ports:
-      - '12322:3001'
+      - '3001:3001'
     command: 'bash -c "npx knex migrate:latest --env production && cd src && node index.js"'
     depends_on:
       - redis
