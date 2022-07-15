@@ -11,11 +11,12 @@ services:
     ports:
       - '5432:5432'
     volumes:
+      - ./services/pgsql/init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
       - ./data/pgsql:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: tic_tac_toe
-      POSTGRES_PASSWORD: Passw0rd
-      POSTGRES_DB: tic_tac_toe
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
   tic_tac_toe_api:
     container_name: tic_tac_toe_api
     image: alexanderfromearth/tic-tac-toe-api:latest
@@ -63,22 +64,10 @@ services:
       METRICS_PREFIX: skillfox_
     ports:
       - '12322:3001'
-    command: 'bash -c "npx knex migrate:latest && cd src && node index.js"'
+    command: 'bash -c "npx knex migrate:latest --env production && cd src && node index.js"'
     depends_on:
       - redis
       - pgsql
-  proxy:
-    container_name: proxy
-    image: alexanderfromearth/andreeff-proxy:latest
-    volumes:
-      - ./services/nginx:/etc/nginx
-      - /etc/letsencrypt:/etc/letsencrypt
-    ports:
-      - '80:80'
-      - '443:443'
-    command: 'nginx -g "daemon off;"'
-    depends_on:
-      - tic_tac_toe_api
   loki:
     container_name: loki
     image: grafana/loki:latest
@@ -110,3 +99,17 @@ services:
     depends_on:
       - loki
       - prometheus
+  proxy:
+    container_name: proxy
+    image: alexanderfromearth/andreeff-proxy:latest
+    volumes:
+      - ./services/nginx:/etc/nginx
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - '80:80'
+      - '443:443'
+    command: 'nginx -g "daemon off;"'
+    depends_on:
+      - tic_tac_toe_api
+      - skillfox_api
+      - grafana
