@@ -14,18 +14,26 @@ jobs:
       - name: Docker login
         run: |
           echo '${{ secrets.DOCKERHUB_PASSWORD }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin
-      - name: Build backend
+      - name: Build ttt-backend
         run: |
-          docker build -f ./docker/api/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest ./services/api
+          docker build -f ./docker/api/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest ./services/tic-tac-toe-api
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-api:latest
-      - name: Build frontend
+      - name: Build ttt-frontend
         run: |
-          docker build -f ./docker/frontend/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-frontend:latest ./services/client
+          docker build -f ./docker/frontend/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-frontend:latest ./services/tic-tac-toe-frontend
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-frontend:latest
+      - name: Build skillfox-backend
+        run: |
+          docker build -f ./docker/api/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/skillfox-api:latest ./services/skillfox-api
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/skillfox-api:latest
+      - name: Build skillfox-frontend
+        run: |
+          docker build -f ./docker/frontend/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/skillfox-frontend:latest ./services/skillfox-frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/skillfox-frontend:latest
       - name: Build proxy
         run: |
-          docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest ./services
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/tic-tac-toe-proxy:latest
+          docker build -f ./docker/proxy/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/andreeff-proxy:latest ./services
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/andreeff-proxy:latest
       - name: Deploy on Node
         run: |
           eval $(ssh-agent -s)

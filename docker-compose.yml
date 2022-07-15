@@ -16,13 +16,13 @@ services:
       POSTGRES_USER: tic_tac_toe
       POSTGRES_PASSWORD: Passw0rd
       POSTGRES_DB: tic_tac_toe
-  api:
-    container_name: api
+  tic_tac_toe_api:
+    container_name: tic_tac_toe_api
     image: alexanderfromearth/tic-tac-toe-api:latest
     volumes:
-      - ./services/api/configs:/usr/src/app/configs
-      - ./services/api/src:/usr/src/app/src
-      - ./services/api/index.js:/usr/src/app/index.js
+      - ./services/tic-tac-toe-api/configs:/usr/src/app/configs
+      - ./services/tic-tac-toe-api/src:/usr/src/app/src
+      - ./services/tic-tac-toe-api/index.js:/usr/src/app/index.js
     environment:
       AUTH_SECRET: super-secret
       REDIS_URL: redis://redis:6379
@@ -36,14 +36,40 @@ services:
       METRICS_PREFIX: tic_tac_toe_
     ports:
       - '12321:12321'
-      - '9229:9229'
     command: 'bash -c "npm run db migrate:latest && npm run debug"'
+    depends_on:
+      - redis
+      - pgsql
+  skillfox_api:
+    container_name: skillfox_api
+    image: alexanderfromearth/skillfox-api:latest
+    volumes:
+      - ./services/skillfox-api/configs:/usr/src/app/configs
+      - ./services/skillfox-api/src:/usr/src/app/src
+    environment:
+      AUTH_SECRET: super-secret
+      REDIS_URL: redis://redis:6379
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_USERNAME: skillfox
+      DB_PASSWORD: Passw0rd
+      DB_DATABASE: skillfox
+      DB_MIN_POOL: 2
+      DB_MAX_POOL: 8
+      NODE_ENV: production
+      LOGGER_LEVEL: info
+      LOKI_HOST: http://loki:3100
+      ENABLE_CONSOLE: 1
+      METRICS_PREFIX: skillfox_
+    ports:
+      - '12322:3001'
+    command: 'bash -c "npx knex migrate:latest && cd src && node index.js"'
     depends_on:
       - redis
       - pgsql
   proxy:
     container_name: proxy
-    image: alexanderfromearth/tic-tac-toe-proxy:latest
+    image: alexanderfromearth/andreeff-proxy:latest
     volumes:
       - ./services/nginx:/etc/nginx
       - /etc/letsencrypt:/etc/letsencrypt
@@ -52,7 +78,7 @@ services:
       - '443:443'
     command: 'nginx -g "daemon off;"'
     depends_on:
-      - api
+      - tic_tac_toe_api
   loki:
     container_name: loki
     image: grafana/loki:latest
