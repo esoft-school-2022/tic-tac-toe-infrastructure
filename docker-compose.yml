@@ -37,34 +37,7 @@ services:
       METRICS_PREFIX: tic_tac_toe_
     ports:
       - '12321:12321'
-    command: 'bash -c "npm run db migrate:latest && npm run debug"'
-    depends_on:
-      - redis
-      - pgsql
-  skillfox_api:
-    container_name: skillfox_api
-    image: alexanderfromearth/skillfox-api:latest
-    volumes:
-      - ./services/skillfox-api/configs:/usr/src/app/configs
-      - ./services/skillfox-api/src:/usr/src/app/src
-    environment:
-      AUTH_SECRET: super-secret
-      REDIS_URL: redis://redis:6379
-      DB_HOST: pgsql
-      DB_PORT: 5432
-      DB_USERNAME: skillfox
-      DB_PASSWORD: Passw0rd
-      DB_DATABASE: skillfox
-      DB_MIN_POOL: 2
-      DB_MAX_POOL: 8
-      NODE_ENV: production
-      LOGGER_LEVEL: info
-      LOKI_HOST: http://loki:3100
-      ENABLE_CONSOLE: 1
-      METRICS_PREFIX: skillfox_
-    ports:
-      - '3001:3001'
-    command: 'bash -c "npx knex migrate:latest --env production && cd src && node index.js"'
+    command: 'bash -c "npm run db migrate:latest && npm run start"'
     depends_on:
       - redis
       - pgsql
@@ -111,5 +84,4 @@ services:
     command: 'nginx -g "daemon off;"'
     depends_on:
       - tic_tac_toe_api
-      - skillfox_api
       - grafana

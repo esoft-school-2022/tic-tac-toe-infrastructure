@@ -4,9 +4,3 @@
 [submodule "services/tic-tac-toe-api"]
 	path = services/tic-tac-toe-api
 	url = git@github.com:esoft-school-2022/tic-tac-toe-backend.git
-[submodule "services/skillfox-api"]
-	path = services/skillfox-api
-	url = git@github.com:Kathleen-J/Project__Backend.git
-[submodule "services/skillfox-frontend"]
-	path = services/skillfox-frontend
-	url = git@github.com:Kathleen-J/Project__Frontend.git

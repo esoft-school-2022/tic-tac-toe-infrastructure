@@ -1,4 +1,2 @@
 CREATE ROLE tic_tac_toe WITH LOGIN PASSWORD 'Passw0rd';
-CREATE ROLE skillfox WITH LOGIN PASSWORD 'Passw0rd';
 CREATE DATABASE tic_tac_toe WITH OWNER tic_tac_toe;
-CREATE DATABASE skillfox WITH OWNER skillfox;
